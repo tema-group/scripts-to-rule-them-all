@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # script/bootstrap: Resolve all dependencies that the application requires to
 #                   run.
@@ -7,25 +7,24 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ]; then
-  brew bundle check >/dev/null 2>&1  || {
-    echo "==> Installing Homebrew dependencies…"
-    brew bundle
-  }
+if [ -f "~/.nvm/nvm.sh" ];then
+  echo "==> nvm isn't installed, installing it..."
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+else
+  echo '✔ nvm is already installed'
+  source ~/.nvm/nvm.sh
 fi
 
-if [ -f ".ruby-version" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
-  echo "==> Installing Ruby…"
-  rbenv install --skip-existing
-  which bundle >/dev/null 2>&1  || {
-    gem install bundler
-    rbenv rehash
-  }
+echo 'Cheking for node version...'
+if [ -f ".node-version" ] && [ "$(nvm version 2>/dev/null)" != "$(cat .node-version)" ]; then
+  echo "==> Node $(cat .node-version) isn't installed, installing it..."
+  nvm install $(cat .node-version)
+  which bundle >/dev/null 2>&1
+else
+  echo '✔ Node is already installed'
 fi
 
-if [ -f "Gemfile" ]; then
-  echo "==> Installing gem dependencies…"
-  bundle check --path vendor/gems >/dev/null 2>&1  || {
-    bundle install --path vendor/gems --quiet --without production
-  }
+if [ -f "package.json" ]; then
+  echo "==> Installing dependencies…"
+  npm install
 fi

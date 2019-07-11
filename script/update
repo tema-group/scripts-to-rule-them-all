@@ -8,6 +8,8 @@ cd "$(dirname "$0")/.."
 
 script/bootstrap
 
-echo "==> Updating db…"
-# run all database migrations to ensure everything is up to date.
-bin/rake db:migrate
+echo "==> Checking outdated"
+npm outdated
+
+echo "==> Updating..."
+npm update
