@@ -8,10 +8,10 @@ set -e
 cd "$(dirname "$0")/.."
 
 if [ -f "~/.nvm/nvm.sh" ];then
+  echo '✔ nvm is already installed'
+else
   echo "==> nvm isn't installed, installing it..."
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-else
-  echo '✔ nvm is already installed'
   source ~/.nvm/nvm.sh
 fi
 
